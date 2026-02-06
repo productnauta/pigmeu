@@ -1,0 +1,910 @@
+prompts:
+  - id: seo-content-analysis
+    name: seo-content-analysis
+    version: "0.1.0"
+    created: "2026-02-06"
+    authors: ["automated: user request"]
+    description: "Analisa conteúdo em pt-BR e retorna JSON com keywords, tópicos, H2s e links externos conforme regras fornecidas."
+    tags: ["seo","content-analysis","keywords","h2","links"]
+
+    template:
+      - role: system
+        content: |-
+          Você é um Analista de Conteúdo, Copywriter, Redator Sênior e Especialista em SEO.
+          Siga estritamente as regras e o formato de saída definidos pelo prompt de usuário.
+      - role: user
+        content: |-
+          TAREFA:
+          Analisar EXAUSTIVAMENTE o conteúdo fornecido em {{content}} e retornar SOMENTE um JSON válido contendo:
+          - 5 principais palavras-chave do conteúdo
+          - 10 palavras-chave de cauda longa do conteúdo
+          - 5 principais tópicos abordados
+          - Lista de títulos H2 (na ordem em que aparecem)
+          - Lista de links externos (URLs únicas)
+
+          ENTRADAS:
+          - content (obrigatório): {{content}}
+          - site_domain (opcional): {{site_domain}}
+
+          REGRAS:
+          1) Saída deve ser APENAS JSON (sem markdown, sem texto fora do JSON).
+          2) Todos os valores textuais devem estar em pt-BR.
+          3) Contagens:
+             - primary_keywords: exatamente 5 itens
+             - long_tail_keywords: exatamente 10 itens
+             - main_topics: exatamente 5 itens
+          4) Não invente H2:
+             - Extraia apenas se houver "## " (Markdown) ou "<h2>...</h2>" (HTML).
+             - Se não houver, h2_titles deve ser [].
+          5) Não invente links: extraia apenas URLs presentes no conteúdo.
+          6) Links externos:
+             - Se site_domain for informado, considere externo todo link cujo domínio seja diferente.
+             - Se site_domain não for informado, considere externo todo link absoluto (http/https).
+             - Deduplicate e mantenha ordem aproximada de aparição.
+          7) Se o conteúdo tiver menos de ~200 palavras:
+             - Não faça extração.
+             - Retorne status="insufficient_content" com missing_requirements e requested_action.
+
+          FORMATO DO JSON DE SAÍDA:
+          {
+            "status": "ok | insufficient_content",
+            "input_summary": {
+              "language": "pt-BR",
+              "approx_word_count": 0,
+              "site_domain": null
+            },
+            "extraction": {
+              "primary_keywords": [],
+              "long_tail_keywords": [],
+              "main_topics": [],
+              "h2_titles": [],
+              "external_links": []
+            },
+            "schema": {}
+          }
+
+          VARIÁVEIS:
+          - {{content}} (string, obrigatório)
+          - {{site_domain}} (string, opcional)
+
+    template_variables:
+      - content
+      - site_domain
+
+    client_parameters:
+      temperature: 0
+      max_tokens: 800
+      top_p: 1.0
+      request_timeout_seconds: 60
+      retries: 2
+      api_delay_seconds: 0
+
+    model:
+      provider: openai
+      name: gpt-5-mini
+
+    output:
+      type: json
+      enforce_json: true
+      trim_trailing_empty_fields: true
+
+    schema:
+      type: object
+      required: ["status","input_summary","extraction","schema"]
+      properties:
+        status:
+          type: string
+          enum: ["ok","insufficient_content"]
+        input_summary:
+          type: object
+          required: ["language","approx_word_count","site_domain"]
+          properties:
+            language:
+              type: string
+              pattern: "^pt-BR$"
+            approx_word_count:
+              type: integer
+              minimum: 0
+            site_domain:
+              type: ["string","null"]
+        extraction:
+          type: object
+          required: ["primary_keywords","long_tail_keywords","main_topics","h2_titles","external_links"]
+          properties:
+            primary_keywords:
+              type: array
+              items: { type: "string" }
+              minItems: 5
+              maxItems: 5
+            long_tail_keywords:
+              type: array
+              items: { type: "string" }
+              minItems: 10
+              maxItems: 10
+            main_topics:
+              type: array
+              items: { type: "string" }
+              minItems: 5
+              maxItems: 5
+            h2_titles:
+              type: array
+              items: { type: "string" }
+            external_links:
+              type: array
+              items:
+                type: string
+                format: uri
+              uniqueItems: true
+        schema:
+          type: object
+          description: "Representação do schema aplicado (ex: constraints/notes). Pode ficar vazio."
+
+    examples:
+      - name: example-insufficient
+        input:
+          content: "Texto curto."
+          site_domain: null
+        expected:
+          status: "insufficient_content"
+
+    tests:
+      - id: basic-structure
+        input:
+          content: "## Título\n\nConteúdo exemplo com mais de duzentas palavras... (usar conteúdo real nos testes)."
+        expected_assertions:
+          - jsonpath: "$.status"
+            equals: "ok"
+          - jsonpath: "$.extraction.primary_keywords"
+            length: 5
+
+    metadata:
+      maintainer: "unknown"
+      recommended_parser: "scripts/parsers/seo_content_parser.py"
+      validation_script: "tests/test_prompts_seo_content_analysis.py"
+
+  - id: content-analyst
+    name: content-analyst
+    version: "a33.33"
+    created: "2023-11-15"
+    authors: ["Chico Alff"]
+    invokable: true
+    description: "Analyze and summarize content with precision and insight. Content analysis specialist with structured, analytical approach."
+    tags: ["content-analysis","summarization","thematic-extraction","information-architecture","trend-analysis"]
+
+    template:
+      - role: system
+        content: |-
+          Você é um Content Analysis Specialist com papéis secundários em Information Architect e Trend Analyst.
+          
+          ## Papéis e Limites
+          - Especialidade: Análise de texto, reconhecimento de padrões, extração temática
+          - Comportamento: Preciso, estruturado, analítico
+          
+          ## Objetivo Primário
+          Analisar e resumir conteúdo com alta precisão.
+          - Critério de sucesso: Extração precisa de pontos-chave, organização temática clara, análise perspicaz
+          - Contexto: Avaliação de conteúdo para tomada de decisão
+          
+          ## Marcos de Validação
+          1. Identificar temas e padrões-chave
+          2. Extrair argumentos principais e evidências
+          3. Avaliar qualidade e relevância do conteúdo
+          4. Gerar resumos estruturados
+          
+          ## Regras Essenciais
+          - OBRIGAÇÕES:
+            * Manter objetividade na análise
+            * Usar formato claro e estruturado
+          - PROIBIÇÕES:
+            * Introduzir opiniões pessoais
+            * Fabricar informações
+          - PRIORIDADES:
+            * Precisão sobre brevidade
+            * Clareza sobre complexidade
+          
+          ## Técnicas de Prompt Engineering
+          - Primária: Chain-of-Thought (raciocínio passo a passo)
+          - Suporte: Zero-shot, Few-shot
+          
+          ## Framework de Raciocínio
+          Siga estes passos sequenciais:
+          1. Leia e compreenda o conteúdo
+          2. Identifique temas e padrões-chave
+          3. Extraia argumentos principais e evidências
+          4. Avalie qualidade e relevância
+          5. Gere resumos estruturados
+          
+          Validações em cada etapa:
+          - Verifique identificação de temas
+          - Confirme extração de argumentos
+          - Valide avaliação de conteúdo
+
+      - role: user
+        content: |-
+          Analise o seguinte conteúdo conforme as instruções recebidas:
+
+          **Conteúdo:**
+          {{content}}
+
+          **Parâmetros de Análise:**
+          - Profundidade: {{depth}}
+          {{#themes}}- Temas focais: {{themes}}{{/themes}}
+          {{#word_limit}}- Limite de palavras: {{word_limit}}{{/word_limit}}
+
+    template_variables:
+      content:
+        type: string
+        required: true
+        description: "Texto de conteúdo a ser analisado"
+      depth:
+        type: string
+        required: true
+        enum: ["basic","advanced"]
+        description: "Nível de profundidade da análise"
+      themes:
+        type: array
+        required: false
+        items: { type: "string" }
+        description: "Temas específicos para focar"
+      word_limit:
+        type: integer
+        required: false
+        description: "Limite de palavras para resumo"
+
+    client_parameters:
+      temperature: 0.3
+      max_tokens: 2048
+      top_p: 0.9
+      request_timeout_seconds: 120
+      retries: 2
+      api_delay_seconds: 0
+
+    model:
+      provider: openai
+      name: gpt-4o-mini
+      fallback_models: ["gpt-4-turbo"]
+
+    output:
+      type: markdown
+      structure:
+        - summary_short: "≤ 153 words"
+        - summary_analytical: "≤ 522 words"
+      formatting:
+        use_sections: true
+        use_bullet_points: true
+        use_emphasis: true
+
+    schema:
+      type: object
+      required: ["summary_short","summary_analytical","themes_identified","quality_assessment"]
+      properties:
+        summary_short:
+          type: string
+          maxLength: 153
+          description: "Resumo executivo conciso"
+        summary_analytical:
+          type: string
+          maxLength: 522
+          description: "Análise detalhada estruturada"
+        themes_identified:
+          type: array
+          items: { type: "string" }
+          description: "Temas principais extraídos"
+        main_arguments:
+          type: array
+          items: { type: "string" }
+          description: "Argumentos principais e evidências"
+        quality_assessment:
+          type: object
+          properties:
+            relevance: { type: "string", enum: ["high","medium","low"] }
+            clarity: { type: "string", enum: ["high","medium","low"] }
+            completeness: { type: "string", enum: ["high","medium","low"] }
+        confidence_score:
+          type: number
+          minimum: 0
+          maximum: 1
+
+    quality_criteria:
+      completeness:
+        - "Todos os temas-chave identificados"
+        - "Argumentos principais extraídos"
+        - "Qualidade do conteúdo avaliada"
+      accuracy:
+        - "Identificação temática precisa"
+        - "Extração de argumentos precisa"
+        - "Avaliação de conteúdo válida"
+      style:
+        - "Linguagem clara e concisa"
+        - "Organização lógica"
+        - "Análise objetiva"
+      edge_cases:
+        - "Gerenciar conteúdo ambíguo"
+        - "Lidar com informações incompletas"
+
+    uncertainty_handling:
+      confidence_scoring: true
+      ambiguity_resolution: "Esclarecer com usuário ou fornecer análise parcial"
+      fallback: "Fornecer análise parcial com avisos"
+      escalation: "Solicitar informações adicionais"
+
+    examples:
+      - name: "Exemplo: Conteúdo Bem-Estruturado"
+        input:
+          content: "Este artigo analisa as tendências de IA em 2026. Primeiro, discute transformers escaláveis. Segundo, aborda aplicações em saúde. Terceiro, examina desafios éticos..."
+          depth: "advanced"
+        expected_output:
+          summary_short: "Artigo abrangente sobre tendências de IA incluindo arquiteturas escaláveis, aplicações em saúde e considerações éticas para 2026."
+          themes_identified: ["IA","transformers","saúde","ética","escalabilidade"]
+
+      - name: "Exemplo: Conteúdo Ambíguo"
+        input:
+          content: "Pode ser ou não importante."
+          depth: "basic"
+        expected_output:
+          quality_assessment:
+            clarity: "low"
+          confidence_score: 0.4
+
+    tests:
+      - id: "test-basic-analysis"
+        input:
+          content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit... (conteúdo longo com múltiplos parágrafos e temas)"
+          depth: "basic"
+        expected_assertions:
+          - jsonpath: "$.summary_short"
+            length: {"max": 153}
+          - jsonpath: "$.themes_identified"
+            minLength: 3
+
+      - id: "test-advanced-analysis"
+        input:
+          content: "Conteúdo técnico detalhado com argumentos complexos e múltiplas linhas de evidência..."
+          depth: "advanced"
+        expected_assertions:
+          - jsonpath: "$.summary_analytical"
+            length: {"max": 522}
+          - jsonpath: "$.main_arguments"
+            minLength: 1
+
+      - id: "test-edge-case-ambiguous"
+        input:
+          content: "Talvez sim, talvez não."
+          depth: "basic"
+        expected_assertions:
+          - jsonpath: "$.quality_assessment.clarity"
+            equals: "low"
+
+    metadata:
+      filename: "content-analyst.prompt.md"
+      author_github: "https://github.com/productnauta"
+      maintainer: "Chico Alff"
+      last_modified: "2026-02-06"
+      recommended_parser: "scripts/parsers/content_analyst_parser.py"
+      validation_script: "tests/test_prompts_content_analyst.py"
+      anti_patterns:
+        - "Introduzir opiniões pessoais"
+        - "Fabricar informações"
+        - "Supercomplificar análise"
+        - "Ignorar temas secundários importantes"
+      bias_points:
+        - "Favoritismo por certos temas"
+        - "Sobrepeso em informações iniciais"
+        - "Desconsideração de fontes minoritárias"
+      performance_benchmarks:
+        analysis_speed: "< 5 segundos para conteúdo típico"
+        accuracy_target: "> 85% de correspondência temática"
+
+  - id: knowledge-context-builder
+    name: knowledge-context-builder
+    version: "1.0.0"
+    created: "2026-02-06"
+    authors: ["Chico Alff"]
+    invokable: true
+    description: "Build optimized knowledge bases and AI context from article summaries and table of contents structures with SEO/GEO optimization."
+    tags: ["knowledge-architecture","content-analysis","context-generation","seo","geo","semantic-extraction","relationship-mapping"]
+
+    template:
+      - role: system
+        content: |-
+          Você é um Knowledge Architecture Specialist & Context Optimization Expert.
+          
+          ## Papéis Primário e Secundários
+          - **Primário**: Knowledge Architecture Specialist & Context Optimization Expert
+          - **Secundários**: Content Analyst, SEO/GEO Strategist, Information Architect, Pattern Recognition Specialist
+          - **Especialidades**: Análise de conteúdo, extração semântica, otimização de hierarquia, design de estrutura de conhecimento
+          - **Comportamento**: Minucioso, exaustivo, sistemático, focado em precisão, consciente de relacionamentos
+          
+          ## Objetivo Primário
+          Analisar summaries de artigos e estruturas de table of contents para gerar bases de conhecimento otimizadas e frameworks contextuais prontos para IA.
+          
+          ## Fluxo de Trabalho (7 Fases Sequenciais)
+          1. **Content Ingestion & Normalization**: Parse e validação de summaries e ToC
+          2. **Deep Analytical Phase**: Extração de termos, keywords, temas, relevância SEO/GEO
+          3. **Pattern Recognition Phase**: Análise de frequência e padrões organizacionais
+          4. **Relationship Mapping Phase**: Mapeamento de relacionamentos explícitos e implícitos
+          5. **Context Generation Phase**: Síntese de conhecimento e inventário de keywords
+          6. **ToC Optimization Phase**: 3 propostas progressivamente otimizadas
+          7. **Output Formatting & Validation**: Validação e otimização para consumo por IA
+          
+          ## Regras Essenciais
+          - **OBRIGAÇÕES**: Analisar TODO o conteúdo; manter precisão; preservar formatação; documentar relacionamentos
+          - **PROIBIÇÕES**: Nunca fabricar informações; nunca omitir análises; preservar rastreabilidade; nunca super-generalizar
+          - **PRIORIDADES**: Completude > Brevidade | Acurácia > Criatividade | Clareza > Estética | Relacionamentos > Elementos Isolados
+
+      - role: user
+        content: |-
+          Analise o conteúdo fornecido conforme instruções de Knowledge Context Building.
+
+          **SUMMARIES DO ARTIGOS:**
+          {{article_summaries}}
+
+          **ESTRUTURAS DE TABLE OF CONTENTS:**
+          {{toc_structures}}
+
+          {{#domain_context}}**CONTEXTO DE DOMÍNIO:** {{domain_context}}{{/domain_context}}
+          {{#target_models}}**MODELOS ALVO:** {{target_models}}{{/target_models}}
+          {{#seo_focus}}**FOCO SEO/GEO:** {{seo_focus}}{{/seo_focus}}
+
+          **ENTREGAS ESPERADAS:**
+          1. Executive Summary (200-300 palavras)
+          2. Keywords & Terminology (SEO, long-tail, GEO, termos técnicos)
+          3. Themes & Topics Section (primários, secundários, relacionamentos)
+          4. Relationships Section (hierárquicas, causais, associativas com confiança)
+          5. Formatted Elements & Citations
+          6. Content Structure Analysis (padrões ToC, profundidade hierárquica, convenções)
+          7. **Três Propostas ToC:**
+             - **Proposta 1**: Frequency-Optimized (SEO-focused)
+             - **Proposta 2**: Enhanced Coverage (gap-aware)
+             - **Proposta 3**: Semantic-Optimized (SEO + GEO)
+
+    template_variables:
+      article_summaries:
+        type: string
+        required: true
+        description: "Summaries de artigos, cada um marcado com ## SUMMARY N"
+      toc_structures:
+        type: string
+        required: true
+        description: "Estruturas de table of contents com hierarquias H2/H3"
+      domain_context:
+        type: string
+        required: false
+        description: "Contexto de domínio específico (healthcare, technology, legal, etc)"
+      target_models:
+        type: array
+        required: false
+        items: { type: "string" }
+        description: "Modelos ou sistemas alvo (RAG, knowledge graphs, semantic search, etc)"
+      seo_focus:
+        type: string
+        required: false
+        description: "Áreas de foco SEO/GEO específicas"
+
+    client_parameters:
+      temperature: 0.2
+      max_tokens: 4096
+      top_p: 0.95
+      request_timeout_seconds: 180
+      retries: 2
+      api_delay_seconds: 0
+
+    model:
+      provider: openai
+      name: gpt-4o
+      fallback_models: ["gpt-4-turbo"]
+      capabilities:
+        streaming: false
+        max_context_tokens: 128000
+
+    output:
+      type: markdown
+      structure:
+        - executive_summary: "200-300 words"
+        - keywords_terminology: "structured lists"
+        - themes_topics: "hierarchical with frequencies"
+        - relationships: "network-style with confidence"
+        - formatted_elements: "citations and references"
+        - structure_analysis: "organizational patterns"
+        - three_proposals: "progressive ToC optimization"
+      formatting:
+        use_tables: true
+        use_sections: true
+        use_bullet_points: true
+        preserve_formatting: true
+        include_confidence_scores: true
+
+    schema:
+      type: object
+      required: ["executive_summary","keywords_terminology","themes_topics","relationships","proposals"]
+      properties:
+        executive_summary:
+          type: string
+          maxLength: 300
+          description: "Visão geral do conteúdo analisado"
+        keywords_terminology:
+          type: object
+          properties:
+            seo_keywords: { type: "array", items: { type: "string" } }
+            long_tail_keywords: { type: "array", items: { type: "string" } }
+            geo_keywords: { type: "array", items: { type: "string" } }
+            technical_terms: { type: "array", items: { type: "string" } }
+            terminology_variations: { type: "object" }
+        themes_topics:
+          type: object
+          properties:
+            primary_themes:
+              type: array
+              items:
+                type: object
+                properties:
+                  theme: { type: "string" }
+                  description: { type: "string" }
+                  frequency: { type: "string" }
+                  keywords: { type: "array" }
+            secondary_topics: { type: "array", items: { type: "string" } }
+            recurring_motifs: { type: "array", items: { type: "string" } }
+        relationships:
+          type: array
+          items:
+            type: object
+            properties:
+              from: { type: "string" }
+              to: { type: "string" }
+              type: { type: "string", enum: ["hierarchical","causal","associative","cross-cutting"] }
+              confidence: { type: "string", enum: ["high","medium","low"] }
+              evidence: { type: "string" }
+        structure_analysis:
+          type: object
+          properties:
+            common_patterns: { type: "array", items: { type: "string" } }
+            organizational_paradigms: { type: "array", items: { type: "string" } }
+            content_gaps: { type: "array", items: { type: "string" } }
+        proposals:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            type: object
+            properties:
+              proposal_number: { type: "integer", enum: [1,2,3] }
+              title: { type: "string" }
+              description: { type: "string" }
+              toc_structure: { type: "string" }
+              optimization_rationale: { type: "string" }
+
+    quality_criteria:
+      completeness:
+        - "Todos os summaries analisados (mín. 100 palavras cada)"
+        - "Todos os ToC structures analisados (mín. 3 artigos)"
+        - "Todos elementos formatados identificados e documentados"
+        - "Todas keywords extraídas e ranqueadas"
+        - "Todos relacionamentos documentados com tipo"
+        - "3 propostas ToC geradas e justificadas"
+      accuracy:
+        - "Extração de keywords: 95%+ acurácia"
+        - "Identificação de temas: 90%+ coverage"
+        - "Análise de frequência ToC: 100% acurácia"
+        - "Todos relacionamentos com evidência explícita"
+      output_validation:
+        - "Markdown bem-formado (sem links quebrados)"
+        - "Todas keywords rastreáveis à fonte"
+        - "Todas temas em 2+ summaries ou com justificativa"
+        - "Propostas 1, 2, 3 progressivamente distintas"
+
+    examples:
+      - name: "exemplo-dataset-completo"
+        input:
+          article_summaries: "## SUMMARY 1\n[800+ words sobre Machine Learning em Healthcare]\n## SUMMARY 2\n[800+ words...]\n..."
+          toc_structures: "## ML Fundamentals\n### Supervised Learning\n### Unsupervised Learning\n...[múltiplas estruturas ToC]"
+          domain_context: "Healthcare & AI"
+        expected_output:
+          executive_summary: "Análise de 5 artigos sobre ML em healthcare com 7 temas primários..."
+          keywords_count: "30-40 keywords únicos identificados"
+          relationships_count: "15+ relacionamentos documentados"
+          proposals_distinct: "3 propostas ToC progressivamente otimizadas com justificativas SEO/GEO"
+
+      - name: "exemplo-conteudo-insuficiente"
+        input:
+          article_summaries: "## SUMMARY 1\n[250 palavras]\n## SUMMARY 2\n[200 palavras]"
+          toc_structures: "## Topic 1\n### Subtopic\n[apenas 1 estrutura simples]"
+        expected_output:
+          status: "insufficient_content"
+          gaps: ["Menos de 3 summaries", "Menos de 3 estruturas ToC"]
+          recommendation: "Forneça mínimo 3 summaries de 500+ palavras cada com 3+ estruturas ToC"
+
+      - name: "exemplo-terminologia-ambigua"
+        input:
+          article_summaries: "## SUMMARY 1\nContexto de documento...\n## SUMMARY 2\nArquiteturas contextuais...\n## SUMMARY 3\nContexto empresarial..."
+        expected_output:
+          terminology_variations:
+            context: ["document context", "contextual architectures", "business context"]
+          recommendation: "Usar termos qualificados em propostas ToC"
+
+    tests:
+      - id: "test-complete-analysis"
+        input:
+          article_summaries: "[5 summaries, 1000+ words each, múltiplos temas]"
+          toc_structures: "[5 estruturas ToC, 2-4 níveis, múltiplos padrões]"
+          domain_context: "Technology"
+        expected_assertions:
+          - jsonpath: "$.keywords_terminology.seo_keywords"
+            minLength: 5
+          - jsonpath: "$.themes_topics.primary_themes"
+            minLength: 5
+          - jsonpath: "$.relationships"
+            minLength: 10
+          - jsonpath: "$.proposals"
+            length: 3
+
+      - id: "test-insufficient-content"
+        input:
+          article_summaries: "[2 summaries, <400 words total]"
+          toc_structures: "[1 estrutura ToC simples]"
+        expected_assertions:
+          - jsonpath: "$.status"
+            equals: "insufficient_content"
+
+      - id: "test-terminology-disambiguation"
+        input:
+          article_summaries: "[summaries com termos ambíguos]"
+          toc_structures: "[múltiplas estruturas ToC]"
+        expected_assertions:
+          - jsonpath: "$.keywords_terminology.terminology_variations"
+            not_empty: true
+          - jsonpath: "$.relationships"
+            minLength: 5
+
+      - id: "test-proposal-progression"
+        input:
+          article_summaries: "[bem-estruturado]"
+          toc_structures: "[bem-estruturado]"
+        expected_assertions:
+          - jsonpath: "$.proposals[0].optimization_rationale"
+            contains: "frequency"
+          - jsonpath: "$.proposals[1].optimization_rationale"
+            contains: "coverage"
+          - jsonpath: "$.proposals[2].optimization_rationale"
+            contains: "semantic"
+
+    metadata:
+      filename: "knowledge-context-builder.prompt.md"
+      author_github: "https://github.com/productnauta"
+      maintainer: "Chico Alff"
+      last_modified: "2026-02-06"
+      source_file: ".github/prompts/knowledge-context-builder.prompt.md"
+      recommended_parser: "scripts/parsers/knowledge_context_parser.py"
+      validation_script: "tests/test_prompts_knowledge_context.py"
+      workflow_phases: 7
+      validation_checkpoints: "after each phase"
+      anti_patterns:
+        - "Análise incompleta (pular summaries/ToCs)"
+        - "Fabricar keywords/temas não presentes"
+        - "Perder rastreabilidade de fonte"
+        - "Propostas idênticas (devem ser progressivas)"
+        - "Ignorar ambiguidades e edge cases"
+      performance_benchmarks:
+        analysis_speed: "1-2 minutos para dataset padrão"
+        output_length: "2000-3500 palavras"
+        keyword_extraction_precision: "95%+"
+        theme_coverage: "90%+ of major themes"
+      bias_points:
+        - "Weighting de frequência (contextual vs equal)"
+        - "Seleção de temas (baseada em dados vs preferência)"
+        - "Paradigmas organizacionais (justificados vs arbitrários)"
+        - "Escolha terminológica (preservar vs impor)"
+
+  - id: seo-geo-toc-architect
+    name: seo-geo-toc-architect
+    version: "1.0.0"
+    created: "2026-02-06"
+    authors: ["Chico Alff"]
+    invokable: true
+    description: "Generate 3 SEO+GEO optimized TOC proposals (H2/H3) from context summary and multiple article TOC structures with metrics and recurrent terms analysis."
+    tags: ["toc-generation","seo","geo","heading-architecture","content-optimization","semantic-search"]
+
+    template:
+      - role: system
+        content: |-
+          Você é um Article Writer & Content Analyst especializado em SEO e análise de estruturas de títulos (H2) e subtítulos (H3) de artigos.
+          
+          ## Objetivo Primário
+          Analisar contexto detalhado e múltiplas estruturas de table of contents (TOCs) para gerar 3 propostas progressivas de TOC otimizadas para SEO e GEO.
+          
+          ## Fluxo de Trabalho
+          1. Parse contexto fornecido (análise de summaries de artigos)
+          2. Analyze ALL estruturas TOC fornecidas (exaustivo e profundo)
+          3. Compute estrutura metrics (média H2, H3, palavras, caracteres)
+          4. Extract 20 termos mais recorrentes/frequentes
+          5. Generate 3 propostas:
+             - **Proposta 1**: Baseada em recorrência/frequência de H2/H3
+             - **Proposta 2**: Estrutura mais frequente + gap filling
+             - **Proposta 3**: Pesquisa web para oportunidades adicionais H2/H3
+          6. Define tema title e descrição central (2-3 linhas)
+          7. Format output em Markdown otimizado para consumo por IA
+          
+          ## Regras Essenciais
+          - **Objetividade**: Sem opiniões pessoais
+          - **Precisão**: Não fabricar informações (exceto Proposal 3 com web research)
+          - **Prioridades**: Acurácia > Brevidade | Clareza > Complexidade
+          - **SEO**: Clarity, intent alignment, entities, variantes semânticas
+          - **GEO**: Headings que respondem perguntas, cobrem subtópicos completamente, melhoram retrieval/synthesis por IA
+          - **Limitações**: Se web access não disponível, indicar APENAS no título da Proposal 3
+
+    template_variables:
+      context:
+        type: string
+        required: true
+        description: "Contexto detalhado gerado da análise de summaries de artigos"
+      tocs:
+        type: string
+        required: true
+        description: "Estruturas TOC múltiplas de artigos (títulos H2/H3 apenas), cada uma marcada como ## TOC N"
+
+    client_parameters:
+      temperature: 0.2
+      max_tokens: 3000
+      top_p: 0.95
+      request_timeout_seconds: 120
+      retries: 2
+      api_delay_seconds: 0
+
+    model:
+      provider: openai
+      name: gpt-4o-mini
+      fallback_models: ["gpt-4-turbo"]
+
+    output:
+      type: markdown
+      structure:
+        - theme_identifier: "central topic label"
+        - central_theme_description: "2-3 lines"
+        - structure_metrics: "H2/H3 averages"
+        - recurrent_terms: "20 comma-separated terms"
+        - three_proposals: "progressive TOC designs"
+      formatting:
+        use_sections: true
+        use_hierarchical_numbering: true
+        preserve_clarity: true
+        optimize_for_ai: true
+
+    schema:
+      type: object
+      required: ["theme_title","central_description","metrics","recurrent_terms","proposals"]
+      properties:
+        theme_title:
+          type: string
+          description: "Central topic identifier title"
+        central_description:
+          type: string
+          description: "Brief central theme description (2-3 lines)"
+        metrics:
+          type: object
+          required: ["avg_h2_per_toc","avg_h3_per_toc","avg_words_h2","avg_chars_h2","avg_words_h3","avg_chars_h3"]
+          properties:
+            avg_h2_per_toc: { type: "number" }
+            avg_h3_per_toc: { type: "number" }
+            avg_words_h2: { type: "number" }
+            avg_chars_h2: { type: "number" }
+            avg_words_h3: { type: "number" }
+            avg_chars_h3: { type: "number" }
+        recurrent_terms:
+          type: array
+          items: { type: "string" }
+          minItems: 20
+          maxItems: 20
+          description: "20 most recurrent terms from all TOCs"
+        proposals:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            type: object
+            required: ["proposal_number","title","description","toc_structure"]
+            properties:
+              proposal_number: { type: "integer", enum: [1,2,3] }
+              title: { type: "string" }
+              description: { type: "string" }
+              toc_structure:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    h2: { type: "string" }
+                    h3_items: 
+                      type: array
+                      items: { type: "string" }
+
+    examples:
+      - name: "exemplo-tech-context"
+        input:
+          context: "Análise de 5 artigos sobre Machine Learning, cobrindo algoritmos de aprendizado supervisionado, não-supervisionado, deep learning, aplicações práticas e considerações éticas."
+          tocs: "## TOC 1\n## Machine Learning Fundamentals\n### Supervised Learning\n### Unsupervised Learning\n### Reinforcement Learning\n## TOC 2\n## ML Algorithms\n### Classification Algorithms\n..."
+        expected_output:
+          theme_title: "Machine Learning: Theory, Algorithms & Applications"
+          metrics_summary: "Avg 4-5 H2 per TOC, 2-3 H3 per H2"
+          recurrent_terms: "machine learning, algorithms, supervised, unsupervised, deep learning, neural networks, classification, regression, applications..."
+          proposals_count: 3
+
+    tests:
+      - id: "test-complete-toc-analysis"
+        input:
+          context: "Detailed context from 5+ article summaries"
+          tocs: "Multiple TOC structures (## TOC 1, ## TOC 2, etc) with H2/H3 hierarchies"
+        expected_assertions:
+          - jsonpath: "$.metrics.avg_h2_per_toc"
+            type: "number"
+          - jsonpath: "$.recurrent_terms"
+            length: 20
+          - jsonpath: "$.proposals"
+            length: 3
+          - jsonpath: "$.proposals[0].title"
+            contains: "SEO+GEO"
+          - jsonpath: "$.proposals[1].title"
+            contains: "Enhanced"
+          - jsonpath: "$.proposals[2].title"
+            contains: "Web"
+
+      - id: "test-metric-accuracy"
+        input:
+          context: "Sample context"
+          tocs: "## TOC 1\n## H2 One\n### H3 One-A\n### H3 One-B\n## H2 Two\n### H3 Two-A"
+        expected_assertions:
+          - jsonpath: "$.metrics.avg_h2_per_toc"
+            equals: 2
+          - jsonpath: "$.metrics.avg_h3_per_toc"
+            minimum: 1
+
+      - id: "test-recurrent-terms-extraction"
+        input:
+          context: "Context mentioning AI, machine learning, algorithms"
+          tocs: "Multiple TOCs with recurring terms"
+        expected_assertions:
+          - jsonpath: "$.recurrent_terms"
+            length: 20
+          - jsonpath: "$.recurrent_terms[0]"
+            type: "string"
+
+      - id: "test-proposal-hierarchy"
+        input:
+          context: "Any valid context"
+          tocs: "Any valid TOCs"
+        expected_assertions:
+          - jsonpath: "$.proposals[0].proposal_number"
+            equals: 1
+          - jsonpath: "$.proposals[1].proposal_number"
+            equals: 2
+          - jsonpath: "$.proposals[2].proposal_number"
+            equals: 3
+          - jsonpath: "$.proposals[0].toc_structure"
+            minLength: 3
+          - jsonpath: "$.proposals[1].toc_structure"
+            minLength: 4
+          - jsonpath: "$.proposals[2].toc_structure"
+            minLength: 4
+
+    metadata:
+      filename: "seo-geo-toc-architect.prompt.md"
+      author_github: "https://github.com/productnauta"
+      maintainer: "Chico Alff"
+      last_modified: "2026-02-06"
+      recommended_parser: "scripts/parsers/toc_architect_parser.py"
+      validation_script: "tests/test_prompts_toc_architect.py"
+      workflow_phases: 7
+      proposal_strategy: "frequency → coverage → web-informed"
+      seo_optimization: "clarity, intent-alignment, entities, semantic-variants"
+      geo_optimization: "question-answering, subtopic-coverage, entity-enrichment, ai-synthesis"
+      anti_patterns:
+        - "Análise incompleta de TOCs fornecidos"
+        - "Fabricar H2/H3 sem base em contexto ou web research"
+        - "Redundância entre propostas (devem ser distintas)"
+        - "Ignorar métricas estruturais"
+        - "Termos recorrentes sem normalização"
+      performance_benchmarks:
+        analysis_speed: "< 1 minuto para dataset padrão (5-10 TOCs)"
+        proposal_diversity: "Propostas 1, 2, 3 visualmente distintas"
+        metrics_accuracy: "100% das métricas estruturais corretas"
+        recurrent_terms_quality: "20 termos relevantes, sem stopwords"
+      limitations:
+        web_access: "Proposal 3 baseado em web research (indicar se não disponível)"
+        context_quality: "Output quality depende da qualidade do contexto fornecido"

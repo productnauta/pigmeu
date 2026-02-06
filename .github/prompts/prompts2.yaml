@@ -1,0 +1,391 @@
+metadata:
+  version: "1.0"
+  created_date: "2026-02-06"
+  description: "Library of prompts for content analysis and optimization"
+  format: "YAML"
+  total_prompts: 1
+
+prompts:
+  - id: "prompt-001"
+    name: "Article SEO Analyzer"
+    category: "content-analysis"
+    tags:
+      - "seo"
+      - "content-structure"
+      - "geo"
+      - "headings"
+    version: "1.0"
+    created_date: "2026-02-06"
+    description: "Analyzes article heading structures and generates SEO/GEO optimized TOC proposals"
+    status: "active"
+    
+    role:
+      title: "Article Writer and Content Analyst"
+      specialization:
+        - "SEO optimization"
+        - "H2/H3 heading structure analysis"
+        - "GEO (Generative Engine Optimization)"
+
+    required_inputs:
+      description: "Two text groups required"
+      groups:
+        - name: "Detailed context"
+          description: "Generated from analyzing articles' summaries"
+          format_key: "context:text"
+        
+        - name: "TOCs"
+          description: "Heading/subheading structures from all articles (titles and subtitles only, no body content)"
+          format_key: "tocs:text"
+          labeling: "Each structure labeled as ## TOC 1, ## TOC 2, etc."
+
+    input_format:
+      description: "Provide inputs exactly in this format"
+      structure: |
+        ## CONTEXT
+        {{context:text}}
+        
+        ## TOCS
+        {{tocs:text}}
+
+    task:
+      description: "Analyze CONTEXT and all provided TOC structures thoroughly and exhaustively"
+      output_deliverables:
+        - name: "proposal_1"
+          type: "SEO+GEO"
+          description: "Based on most recurring/frequent headings and subheadings, consolidated and optimized"
+        
+        - name: "proposal_2"
+          type: "SEO+GEO"
+          description: "Uses most frequent structure as backbone, adds relevant subheadings from other TOCs"
+          approach: "Fill gaps, avoid redundancy"
+        
+        - name: "proposal_3"
+          type: "SEO+GEO+Web Research"
+          description: "Research web for content related to themes in CONTEXT and TOCs"
+          approach: "Identify additional H2/H3 opportunities not present in provided TOCs"
+          base_source: "Proposal 1"
+        
+        - name: "theme_identifier"
+          type: "string"
+          description: "Theme identifier title for analyzed content (only to label central topic)"
+        
+        - name: "central_theme_description"
+          type: "string"
+          length: "2-3 lines"
+          description: "Brief central-theme description (only to label central topic)"
+        
+        - name: "most_recurrent_terms"
+          type: "array"
+          count: 20
+          description: "Most recurrent/frequent terms across provided TOC headings/subheadings"
+          format: "array of strings"
+        
+        - name: "structure_metrics"
+          type: "object"
+          description: "Computed metrics from the TOCs"
+
+    rules_and_constraints:
+      objectivity:
+        - "Stay objective"
+        - "Do not add personal opinions"
+      
+      information_integrity:
+        - "Do not fabricate information beyond what is provided"
+        - "Exception: Proposal 3 must be grounded in web research"
+      
+      web_access:
+        - "If web access not possible, indicate limitation only inside proposal_3's title"
+        - "Still produce best possible Proposal 3 from CONTEXT + TOCs"
+      
+      prioritization:
+        - "Accuracy over brevity"
+        - "Clarity over complexity"
+      
+      heading_quality:
+        - "Clear and specific"
+        - "Non-redundant"
+        - "Aligned to search intent"
+        - "Comprehensive topic coverage"
+      
+      optimization:
+        seo:
+          - "Clarity"
+          - "Intent alignment"
+          - "Entities"
+          - "Semantic variants without keyword stuffing"
+        
+        geo_generative_engine_optimization:
+          - "Headings that answer questions"
+          - "Complete subtopic coverage"
+          - "Include entities/terms that improve retrieval"
+          - "Improve synthesis by AI models"
+
+    structure_metrics:
+      description: "Compute from the TOCs"
+      metrics:
+        h2_metrics:
+          - name: "average_h2_per_toc"
+            type: "number"
+          
+          - name: "average_words_per_h2"
+            type: "number"
+          
+          - name: "average_characters_per_h2"
+            type: "number"
+        
+        h3_metrics:
+          - name: "average_h3_per_toc"
+            type: "number"
+          
+          - name: "average_words_per_h3"
+            type: "number"
+          
+          - name: "average_characters_per_h3"
+            type: "number"
+      
+      definitions:
+        h2: "Any main section heading not nested under another heading"
+        h3: "Any subheading directly nested under an H2"
+        words: "Space-separated tokens"
+        characters: "Count including spaces"
+
+    top_recurrent_terms:
+      description: "Extract from all H2/H3 titles in provided TOCs"
+      normalization:
+        - "Lowercase"
+        - "Consider common variations (singular/plural, inflections, close spellings)"
+      
+      exclusions:
+        - "Common stopwords"
+        - "Examples: the, a, an, and, or, to, of, in, on, for, with, etc."
+      
+      output_format: "Array of 20 most recurrent terms/entities"
+
+    output_format:
+      format: "JSON"
+      optimization: "Optimized for AI-model readability"
+      constraints:
+        - "Do not include any other information beyond what is requested"
+        - "Use exact structure and format defined in json_schema"
+
+    output_structure:
+      theme_identifier:
+        type: "string"
+        content: "Theme identifier title"
+      
+      central_theme_description:
+        type: "string"
+        length: "2-3 lines"
+        content: "Brief description of central theme"
+      
+      structure_metrics:
+        type: "object"
+        properties:
+          average_h2_per_toc:
+            type: "number"
+          average_words_per_h2:
+            type: "number"
+          average_characters_per_h2:
+            type: "number"
+          average_h3_per_toc:
+            type: "number"
+          average_words_per_h3:
+            type: "number"
+          average_characters_per_h3:
+            type: "number"
+      
+      most_recurrent_terms:
+        type: "array"
+        items:
+          type: "string"
+        count: 20
+      
+      proposed_tocs:
+        type: "object"
+        proposals:
+          proposal_1:
+            title: "string"
+            description: "SEO+GEO optimized based on most recurring headings"
+            toc:
+              type: "array"
+              items:
+                h2:
+                  type: "string"
+                h3:
+                  type: "array"
+                  items:
+                    type: "string"
+          
+          proposal_2:
+            title: "string"
+            description: "SEO+GEO optimized using frequent structure as backbone with additional relevant subheadings"
+            toc:
+              type: "array"
+              items:
+                h2:
+                  type: "string"
+                h3:
+                  type: "array"
+                  items:
+                    type: "string"
+          
+          proposal_3:
+            title: "string (include web research limitation note if applicable)"
+            description: "SEO+GEO+Web Research optimized incorporating additional H2/H3 opportunities"
+            toc:
+              type: "array"
+              items:
+                h2:
+                  type: "string"
+                h3:
+                  type: "array"
+                  items:
+                    type: "string"
+
+    json_schema:
+      description: "JSON Schema that validates the output structure"
+      version: "draft-07"
+      schema:
+        "$schema": "http://json-schema.org/draft-07/schema#"
+        "title": "Article SEO Analyzer Output"
+        "type": "object"
+        "required":
+          - "theme_identifier"
+          - "central_theme_description"
+          - "structure_metrics"
+          - "most_recurrent_terms"
+          - "proposed_tocs"
+        "properties":
+          "theme_identifier":
+            "type": "string"
+            "description": "Theme identifier title for the analyzed content"
+            "minLength": 1
+          
+          "central_theme_description":
+            "type": "string"
+            "description": "Brief central-theme description (2-3 lines)"
+            "minLength": 1
+          
+          "structure_metrics":
+            "type": "object"
+            "description": "Metrics computed from the provided TOCs"
+            "required":
+              - "average_h2_per_toc"
+              - "average_words_per_h2"
+              - "average_characters_per_h2"
+              - "average_h3_per_toc"
+              - "average_words_per_h3"
+              - "average_characters_per_h3"
+            "properties":
+              "average_h2_per_toc":
+                "type": "number"
+                "description": "Average number of H2 headings per TOC"
+                "minimum": 0
+              
+              "average_words_per_h2":
+                "type": "number"
+                "description": "Average words per H2 heading"
+                "minimum": 0
+              
+              "average_characters_per_h2":
+                "type": "number"
+                "description": "Average characters per H2 heading (including spaces)"
+                "minimum": 0
+              
+              "average_h3_per_toc":
+                "type": "number"
+                "description": "Average number of H3 subheadings per TOC"
+                "minimum": 0
+              
+              "average_words_per_h3":
+                "type": "number"
+                "description": "Average words per H3 subheading"
+                "minimum": 0
+              
+              "average_characters_per_h3":
+                "type": "number"
+                "description": "Average characters per H3 subheading (including spaces)"
+                "minimum": 0
+          
+          "most_recurrent_terms":
+            "type": "array"
+            "description": "20 most recurrent terms across provided TOC headings/subheadings"
+            "minItems": 20
+            "maxItems": 20
+            "items":
+              "type": "string"
+              "minLength": 1
+          
+          "proposed_tocs":
+            "type": "object"
+            "description": "Three optimized TOC proposals"
+            "required":
+              - "proposal_1"
+              - "proposal_2"
+              - "proposal_3"
+            "properties":
+              "proposal_1":
+                "$ref": "#/definitions/proposal"
+                "description": "SEO+GEO optimized based on most recurring headings"
+              
+              "proposal_2":
+                "$ref": "#/definitions/proposal"
+                "description": "SEO+GEO optimized using frequent structure as backbone"
+              
+              "proposal_3":
+                "$ref": "#/definitions/proposal"
+                "description": "SEO+GEO+Web Research optimized incorporating additional opportunities"
+        
+        "definitions":
+          "proposal":
+            "type": "object"
+            "required":
+              - "title"
+              - "description"
+              - "toc"
+            "properties":
+              "title":
+                "type": "string"
+                "description": "Proposal title"
+                "minLength": 1
+              
+              "description":
+                "type": "string"
+                "description": "Proposal description and optimization approach"
+                "minLength": 1
+              
+              "toc":
+                "type": "array"
+                "description": "Table of Contents with H2 headings and nested H3 subheadings"
+                "items":
+                  "type": "object"
+                  "required":
+                    - "h2"
+                    - "h3"
+                  "properties":
+                    "h2":
+                      "type": "string"
+                      "description": "H2 main heading"
+                      "minLength": 1
+                    
+                    "h3":
+                      "type": "array"
+                      "description": "Array of H3 subheadings nested under this H2"
+                      "items":
+                        "type": "string"
+                        "minLength": 1
+                      "minItems": 0
+
+# Exemplo de segundo prompt (comentado)
+# - id: "prompt-002"
+#   name: "Meta Description Generator"
+#   category: "seo-metadata"
+#   tags:
+#     - "seo"
+#     - "metadata"
+#     - "description"
+#   version: "1.0"
+#   created_date: "2026-02-06"
+#   description: "Generates optimized meta descriptions for web pages"
+#   status: "active"
+#   ...
