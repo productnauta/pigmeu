@@ -1,0 +1,21 @@
+{
+  "title": "Guia Completo de Integração com WordPress REST API",
+  "content": {
+    "raw": "<p>Este artigo explica como criar, atualizar e publicar posts utilizando a WordPress REST API.</p><h2>Introdução</h2><p>A REST API permite integração com aplicações externas, headless CMS e fluxos de IA.</p>"
+  },
+  "excerpt": "Aprenda a criar e publicar posts no WordPress usando a REST API.",
+  "status": "publish",
+  "slug": "guia-integracao-wordpress-rest-api",
+  "author": 1,
+  "categories": [3, 7],
+  "tags": [12, 18, 25],
+  "featured_media": 42,
+  "comment_status": "open",
+  "ping_status": "closed",
+  "sticky": false,
+  "meta": {
+    "seo_title": "WordPress REST API: Guia Completo",
+    "seo_description": "Tutorial detalhado sobre integração com a WordPress REST API",
+    "origem_conteudo": "gerado_por_ia"
+  }
+}

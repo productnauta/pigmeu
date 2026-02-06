@@ -1,0 +1,62 @@
+prompts:
+  - id: extract-legislation-from-md
+    name: extract-legislation-from-md
+    version: "0.1.1"
+    created: "2025-01-31"
+    authors: ["Chico Alff"]
+    description: "Extrai referências a normas e dispositivos de um texto. Saída em protocolo de linhas N/R."
+    tags: ["legislação", "parser", "line-protocol"]
+
+    template:
+      - role: system
+        content: |-
+          ...
+      - role: user
+        content: |-
+          ...
+          {{texto}}
+
+    template_variables: ["texto"]
+
+    client_parameters:
+      temperature: 0
+      max_tokens: 800
+      top_p: 1.0
+      request_timeout_seconds: 60
+      retries: 3
+      api_delay_seconds: 0
+
+    model:
+      provider: mistral
+      name: mistral-text
+
+    output:
+      type: line_protocol
+      prefixes: ["N", "R"]
+      delimiter: "|"
+      trim_trailing_empty_fields: true
+
+    schema:
+      N: [id, jurisdiction, type, year, description]
+      R: [article, isCaput, inciso, paragraph, isParagraphSingle, letterCode]
+
+    normalization:
+      normalize_identifier: "remover pontos do número (ex: 9.099 → 9099)"
+      roman_to_int: "II/IV → 2/4"
+
+    examples:
+      - name: "Exemplo 1"
+        input: "..."
+        output: |-
+          ...
+
+    tests:
+      - id: "teste-1"
+        input: "..."
+        expected:
+          - "..."
+          - "..."
+
+    metadata:
+      recommended_parser: "scripts/parsers/legislation_parser.py"
+      validation_script: "tests/test_prompts_extract_legislation.py"
