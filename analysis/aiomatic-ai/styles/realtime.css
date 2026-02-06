@@ -1,0 +1,95 @@
+.btn-processing {
+position: relative;
+pointer-events: none;
+}
+.btn-processing::after {
+content: "";
+display: inline-block;
+width: 1em;
+height: 1em;
+margin-left: 0.5em;
+border: 2px solid #ccc;
+border-top-color: #333;
+border-radius: 50%;
+animation: spin 0.75s linear infinite;
+vertical-align: middle;
+}
+@keyframes spin {
+to {
+    transform: rotate(360deg);
+}
+}
+.aiomatic-realtime-chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+}
+#aiomatic-realtime-status {
+    margin-bottom: 15px;
+    word-break: break-word;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.airealtimechatsubmitbut {
+    display: block;
+    margin: auto;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.airealtimechatsubmitbut:hover {
+    transform: scale(1.05);
+}
+.airealtimechatsubmitbut:active {
+    transform: scale(0.95);
+}
+@media (max-width: 768px) {
+    .aiomatic-realtime-chat-container {
+        padding: 15px;
+    }
+    .airealtimechatsubmitbut {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+#aiomatic-realtime-log
+{
+    width:100%;
+    height: 300px; 
+    overflow-y: auto; 
+    padding: 10px; 
+    margin-bottom: 10px;
+}
+.ai-bubble.ai-transcript
+{
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    cursor: pointer;
+    word-break: break-word;
+}
+.ai-bubble.ai-speech
+{
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    cursor: pointer;
+    word-break: break-word;
+}

@@ -1,0 +1,67 @@
+/* Style the modal container */
+#aiomatic-deactivation-modal {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+.aiomatic_check_label
+{
+    font-size: 13px;
+}
+.ui-dialog .ui-dialog-buttonpane button
+{
+    min-height: 34px!important;
+}
+/* Style the paragraph text in the modal */
+#aiomatic-deactivation-modal p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+/* Style the label for the checkbox */
+#aiomatic-deactivation-modal label {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+/* Style the checkbox */
+#aiomatic-deactivation-modal input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Style the warning for the checkbox */
+#aiomatic-deactivation-modal label input[type="checkbox"] + span {
+    color: #d9534f; /* Bootstrap danger color */
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* Style the modal title */
+.ui-dialog-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Style the buttons */
+.ui-dialog-buttonpane button {
+    background-color: #0073aa; /* WordPress blue */
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.ui-dialog-buttonpane button:hover {
+    background-color: #006799;
+    color:#FFA500;
+}
+
+/* Add a subtle border and padding around the modal */
+.ui-dialog {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
