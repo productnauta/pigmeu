@@ -233,9 +233,6 @@ Analisando o conteúdo informado, responda com:
     3. Tamanho máximo: 522 palavras em 7 parágrafos
 ```
 
----
----
-
 
 Atue como um redator de artigos e analista de conteúdo, especilista em SEO e na identificação de estruturas de títulos e subtítulos de artigos.
 
@@ -260,220 +257,93 @@ Responda com as 3 propostas de estrutura de títulos e subtítulos (toc), cada u
   - Hierarquização correta dos títulos e subtítulos (h2, h3, etc).
 FORMATO E EXEMPLO DE OUTPUT:
   - Responda em formato JSON válido, sem markdown, sem texto fora do JSON.
-  ``` json
+  
+```json
 {
-  "titulo_artigo": "Guia Completo de SEO Técnico para 2024",
-  "resumo_analise": {
-    "temas_principais": [
-      "SEO Técnico",
-      "Core Web Vitals",
-      "Indexação",
-      "Estrutura de Site",
-      "Velocidade de Carregamento"
-    ],
-    "palavras_chave_principais": [
-      "SEO técnico",
-      "core web vitals",
-      "rendimento do site",
-      "estrutura de URLs",
-      "schema markup"
-    ],
-    "estruturas_analisadas": 5,
-    "titulos_recorrentes": [
-      "O Que é SEO Técnico",
-      "Core Web Vitals",
-      "Estrutura de URLs",
-      "Schema Markup",
-      "Mobile-First Indexing"
-    ],
-    "substitulos_recorrentes": [
-      "LCP, FID, CLS",
-      "Canonical Tags",
-      "XML Sitemap",
-      "Estrutura de Breadcrumbs",
-      "Otimização de Imagens"
-    ]
-  },
-  "propostas": [
-    {
-      "id": 1,
-      "nome": "Baseada em Frequência (SEO/GEO)",
-      "descricao": "Estrutura baseada nos títulos e subtítulos mais recorrentes nas 5 TOCs analisadas, otimizada com palavras-chave principais",
-      "estrutura": [
-        {
-          "h2": "O Que é SEO Técnico e Por Que é Importante",
-          "h3": [
-            "Definição e Conceitos Básicos",
-            "Diferença Entre SEO On-Page e Técnico",
-            "Impacto nos Rankings de Busca"
-          ]
-        },
-        {
-          "h2": "Core Web Vitals: Métricas Essenciais",
-          "h3": [
-            "LCP (Largest Contentful Paint)",
-            "FID (First Input Delay)",
-            "CLS (Cumulative Layout Shift)"
-          ]
-        },
-        {
-          "h2": "Estrutura de URLs e Hierarquia do Site",
-          "h3": [
-            "Melhores Práticas para URLs SEO",
-            "Implementação de Canonical Tags",
-            "Otimização da Arquitetura de Informação"
-          ]
-        },
-        {
-          "h2": "Schema Markup e Dados Estruturados",
-          "h3": []
-        },
-        {
-          "h2": "Mobile-First Indexing na Prática",
-          "h3": [
-            "Responsividade e Design Adaptativo",
-            "Otimização para Dispositivos Móveis"
-          ]
-        }
-      ],
-      "total_h2": 5,
-      "total_h3": 8,
-      "caracteristicas": {
-        "otimizacao_seo": "Alta",
-        "otimizacao_geo": "Média",
-        "base_dados": "Estruturas fornecidas",
-        "novos_elementos": "0"
-      }
+    "article_title": "string",
+    "analysis_summary": {
+        "main_themes": ["string"],
+        "primary_keywords": ["string"],
+        "analyzed_structures": "number",
+        "recurring_titles": ["string"],
+        "recurring_subtitles": ["string"]
     },
-    {
-      "id": 2,
-      "nome": "Com Cobertura Ampliada (SEO/GEO)",
-      "descricao": "Expansão da proposta 1 incluindo subtítulos relevantes identificados em outras estruturas analisadas",
-      "estrutura": [
+    "proposals": [
         {
-          "h2": "Introdução ao SEO Técnico em 2024",
-          "h3": [
-            "Evolução do SEO Técnico",
-            "Tendências Atuais do Mercado",
-            "Ferramentas Essenciais para Análise"
-          ]
-        },
-        {
-          "h2": "Dominando os Core Web Vitals",
-          "h3": [
-            "LCP: Otimização de Imagens e Fontes",
-            "FID: Redução do Tempo de Interação",
-            "CLS: Estabilidade Visual",
-            "Ferramentas de Monitoramento"
-          ]
-        },
-        {
-          "h2": "Estrutura de Site e URLs",
-          "h3": [
-            "Criação de XML Sitemap",
-            "Implementação de Breadcrumbs",
-            "Gerenciamento de Crawl Budget"
-          ]
-        },
-        {
-          "h2": "Schema Markup Avançado",
-          "h3": [
-            "Tipos de Dados Estruturados",
-            "Implementação com JSON-LD"
-          ]
-        },
-        {
-          "h2": "Mobile-First Indexing",
-          "h3": [
-            "Testes de Usabilidade Móvel",
-            "Otimização de Imagens Responsivas"
-          ]
-        },
-        {
-          "h2": "Segurança e HTTPS",
-          "h3": []
+        "id": "number",
+        "name": "string",
+        "description": "string",
+        "structure": [
+            {
+            "h2": "string",
+            "h3": ["string"]
+            }
+        ],
+        "total_h2": "number",
+        "total_h3": "number",
+        "features": {
+            "seo_optimization": "string",
+            "geo_optimization": "string",
+            "data_source": "string",
+            "new_elements": "number"
         }
-      ],
-      "total_h2": 6,
-      "total_h3": 12,
-      "caracteristicas": {
-        "otimizacao_seo": "Alta",
-        "otimizacao_geo": "Alta",
-        "base_dados": "Estruturas fornecidas + análise complementar",
-        "novos_elementos": "4"
-      }
-    },
-    {
-      "id": 3,
-      "nome": "Com Oportunidades Externas (SEO/GEO)",
-      "descricao": "Estrutura que incorpora títulos identificados em pesquisas externas sobre tendências emergentes",
-      "estrutura": [
-        {
-          "h2": "SEO Técnico na Era da IA Generativa",
-          "h3": [
-            "Impacto do ChatGPT nos Mecanismos de Busca",
-            "SEO para Featured Snippets",
-            "Estratégias para Zero-Click Searches"
-          ]
-        },
-        {
-          "h2": "Core Web Vitals 2.0 e Métricas Futuras",
-          "h3": [
-            "INP (Interaction to Next Paint)",
-            "Optimização para Experience Signals",
-            "Preparação para Novas Métricas"
-          ]
-        },
-        {
-          "h2": "Estratégias Avançadas de Estruturação",
-          "h3": [
-            "Topic Clusters e Pillar Pages",
-            "Estrutura para E-A-T (Expertise, Authoritativeness, Trustworthiness)",
-            "Otimização para Pesquisa por Voz"
-          ]
-        },
-        {
-          "h2": "Schema Markup para IA e Rich Results",
-          "h3": [
-            "Structured Data para AI Overviews",
-            "Implementação de FAQ Schema",
-            "How-To Schema para Tutoriais"
-          ]
-        },
-        {
-          "h2": "Mobile-First e Beyond",
-          "h3": [
-            "Otimização para Progressive Web Apps",
-            "SEO para Aplicativos Nativos",
-            "Estratégias Cross-Device"
-          ]
-        },
-        {
-          "h2": "Performance e Sustentabilidade Digital",
-          "h3": [
-            "Green SEO e Eficiência Energética",
-            "Otimização de Carbon Footprint"
-          ]
-        },
-        {
-          "h2": "Ferramentas de Automação e IA",
-          "h3": []
         }
-      ],
-      "total_h2": 7,
-      "total_h3": 13,
-      "caracteristicas": {
-        "otimizacao_seo": "Muito Alta",
-        "otimizacao_geo": "Muito Alta",
-        "base_dados": "Estruturas fornecidas + pesquisa externa",
-        "novos_elementos": "9"
-      }
+    ],
+    "metadata": {
+        "generation_date": "string (ISO 8601)",
+        "schema_version": "string",
+        "total_titles_analyzed": "number",
+        "total_subtitles_analyzed": "number"
     }
-  ],
-  "metadata": {
-    "data_geracao": "2024-01-15T10:30:00Z",
-    "versao_schema": "1.0",
-    "total_titulos_analisados": 32,
-    "total_subtitulos_analisados": 48
-  }
 }
+```
+
+
+```markdown
+
+# TOC GENERATION PROMPT
+## SYSTEM PROMPT
+
+You are an AI specialized in **SEO-oriented article outline generation** and **analysis of H2/H3 title structures**.
+
+Analyze a provided **context**, multiple **TOC structures**, and a **target article title**. From this analysis, generate **three optimized TOC proposals** following SEO and GEO best practices.
+
+Do not generate article content. Do not explain reasoning. Output **only valid, minified JSON**, with no markdown or extra text.
+
+The output **must strictly follow this schema** (minified):
+
+{"article_title":"string","analysis_summary":{"main_themes":["string"],"primary_keywords":["string"],"analyzed_structures":0,"recurring_titles":["string"],"recurring_subtitles":["string"]},"proposals":[{"id":0,"name":"string","description":"string","structure":[{"h2":"string","h3":["string"]}],"total_h2":0,"total_h3":0,"features":{"seo_optimization":"string","geo_optimization":"string","data_source":"string","new_elements":0}}],"metadata":{"generation_date":"ISO-8601","schema_version":"1.0","total_titles_analyzed":0,"total_subtitles_analyzed":0}}
+
+Before responding, internally validate all constraints. If invalid, regenerate silently.
+
+------------
+
+## USER MESSAGE
+
+You will receive:
+
+1. **Context**: description of the topic, keywords, entities, and relevant themes.  
+2. **TOC Structures**: multiple outlines containing only H2 and H3 titles, identified as `## TOC 1`, `## TOC 2`, etc.  
+3. **Article Title**: the title for which the new TOCs will be generated.
+
+### Task
+
+Using all inputs, generate **three TOC proposals**:
+
+- **Proposal 1**: Based on the most frequent and recurring H2/H3 patterns.  
+- **Proposal 2**: Same base as Proposal 1, enriched with relevant subtitles found across other TOCs.  
+- **Proposal 3**: Based on Proposal 1, expanded with new relevant H2/H3 inferred from context and domain knowledge.
+
+All proposals must be optimized for **SEO and GEO**.
+
+### Mandatory Constraints (per proposal)
+
+- H2: minimum 5, maximum 9 
+- Total H3: minimum 7, maximum 13  
+- Correct hierarchy (H3 always under an H2)  
+- Clear, concise, non-redundant titles  
+
+### Output Rules
+
+Return **only valid JSON**, strictly following the schema defined in the system prompt. No markdown. No explanations.
+```
