@@ -1,0 +1,44 @@
+id: toc_generation
+name: "TOC GENERATION PROMPT"
+version: "1.0.0"
+language: en
+status: active
+tags: ["seo", "geo", "toc", "outline"]
+
+runtime:
+  provider: mistral
+  mode: chat
+  model: mistral-large-latest
+  model_preset: deterministic_json
+  parameters:
+    temperature: 0.0
+    top_p: 1.0
+    max_output_tokens: 8000
+  auth:
+    api_key: 5ypcOr0mRKUCz9rdsHAp5RbYFRMoPBS6
+
+messages:
+  - role: system
+    template: "template/system-prompt.md"
+  - role: user
+    template: "template/user-message.md"
+
+io:
+  input:
+    format: json
+    required_fields: ["context", "tocs", "article_title"]
+  output:
+    format: json
+    schema_ref: "schemas/output.schema.json"
+    must_be_minified: true
+
+validation:
+  json:
+    strict: true
+    disallow_markdown: true
+  schema:
+    enabled: true
+  retry_on_fail:
+    enabled: true
+    max_retries: 2
+    strategy: regenerate

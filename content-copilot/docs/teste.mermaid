@@ -1,0 +1,107 @@
+```mermaid
+flowchart TB
+
+%% =========================
+%% Fluxo principal (UI)
+%% =========================
+start(( )) --> ui1[Iniciar fluxo<br/>geração de ideias]
+ui1 --> ui2[Disponibiliza interface<br/>do módulo de geração<br/>de conteúdos]
+
+ui2 --> u1[Informa os links dos conteúdos<br/>que deverão ser considerados<br/>para gerar as ideias]
+u1 --> u2[Configura as opções<br/>de geração]
+u2 --> u3[Solicita a geração]
+u3 --> hub((Processamento<br/>dos links))
+
+%% =========================
+%% Subprocesso 1: Obter HTML das Fontes
+%% =========================
+hub --> s1_init
+
+subgraph S1[Obter HTML das Fontes]
+direction TB
+
+s1_init[Obtém o link da fonte<br/>para análise]
+s1_1[Acessa o link e obtém<br/>os metadados]
+s1_2[Persiste metadados na collection<br/>'original_sources']
+s1_3[Obtém o HTML completo<br/>da página]
+s1_4[Sanitiza o HTML removendo HTML/CSS/JS etc.<br/>Mantém apenas o conteúdo de texto]
+s1_5[Persiste o HTML sanitizado na collection<br/>'original_sources']
+s1_dec{Ainda existem item<br/>para processar?}
+
+s1_init --> s1_1 --> s1_2 --> s1_3 --> s1_4 --> s1_5 --> s1_dec
+s1_dec -- SIM --> s1_init
+end
+
+s1_dec -- NÃO --> s2_init
+
+%% (anotação do diagrama original)
+mgr1[[Atualiza status no documento<br/>da collection]]:::note
+s1_2 -.-> mgr1
+
+%% =========================
+%% Subprocesso 2: IA - Analisar e resumir Fontes
+%% =========================
+subgraph S2[IA: Analisar e resumir Fontes]
+direction TB
+
+s2_init[Carrega HTML sanitizado<br/>da fonte]
+s2_p[Carrega prompt<br/>'content-analysis']
+s2_send[Envia prompt e conteúdo<br/>para a IA]
+s2_ai[Modelo de IA analisa<br/>o conteúdo da fonte]
+s2_norm[Normaliza o conteúdo<br/>da resposta da IA]
+s2_save[Persiste o conteúdo no respectivo<br/>documento da collection]
+s2_dec{Ainda existem item<br/>para processar?}
+
+s2_init --> s2_p --> s2_send --> s2_ai --> s2_norm --> s2_save --> s2_dec
+s2_dec -- SIM --> s2_init
+end
+
+s2_dec -- NÃO --> s3_init
+
+%% artefatos de prompts (referência do diagrama original)
+prompts[(prompt.yaml)]:::artifact
+p_content[[content-analysis]]:::tag
+prompts -.-> s2_p
+p_content -.-> s2_p
+
+%% =========================
+%% Subprocesso 3: IA - Consolidar e Construir contexto
+%% =========================
+subgraph S3[IA: Consolidar e Construir contexto]
+direction TB
+
+s3_init[Obtém o resumo de<br/>todas as fontes]
+s3_1[Concatena todos em um único texto,<br/>identificando o início e fim de cada uma]
+s3_2[Obtém a estrutura de títulos de todas as fontes (TOC)]
+s3_3[Concatena o TOC de todas as fontes,<br/>identificando cada uma]
+s3_p[Carrega prompt<br/>'build-sources-context']
+s3_user[Monta a user message<br/>com o conteúdo a ser analisado]
+s3_send[Envia prompt e conteúdo<br/>para a IA]
+s3_ai[IA atua conforme prompt e responde<br/>no formato especificado]
+s3_norm[Normaliza o conteúdo<br/>da resposta da IA]
+s3_save[Persiste o conteúdo no respectivo<br/>documento da collection]
+
+s3_init --> s3_1 --> s3_2 --> s3_3 --> s3_p --> s3_user --> s3_send --> s3_ai --> s3_norm --> s3_save
+end
+
+s3_save --> done(( ))
+
+%% anotações do diagrama original
+note_extract[[Extraído juntamente com os metadados,<br/>disponível no documento da collection]]:::note
+note_mand[[Atualiza status no documento<br/>da collection<br/><b>MANDATÓRIO</b>]]:::note
+s3_init -.-> note_extract
+s3_save -.-> note_mand
+
+%% prompts para consolidação
+p_build[[build-sources-context]]:::tag
+prompts -.-> s3_p
+p_build -.-> s3_p
+
+%% =========================
+%% Styles
+%% =========================
+classDef artifact fill:#fff,stroke:#333,stroke-width:1px;
+classDef tag fill:#ffef9e,stroke:#333,stroke-width:1px;
+classDef note fill:#fff,stroke:#999,stroke-dasharray: 4 3;
+
+```

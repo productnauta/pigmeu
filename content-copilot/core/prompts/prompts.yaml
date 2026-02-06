@@ -1,0 +1,8 @@
+version: "1.0"
+base_dir: "."  # relativo a content-copilot/core/prompts/
+
+prompts:
+  - id: toc_generation
+    name: "TOC Generation Prompt"
+    path: "toc_generation"
+    enabled: true

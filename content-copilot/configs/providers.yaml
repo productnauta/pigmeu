@@ -1,0 +1,10 @@
+providers:
+  mistral:
+    default_mode: chat
+    api_key: 5ypcOr0mRKUCz9rdsHAp5RbYFRMoPBS6
+  mistral:
+    default_mode: messages
+    api_key: CN9fTAtnszPRB9HNSvOCSdeQltb86RGL
+  mistral:
+    default_mode: generate_content
+    api_key: CN9fTAtnszPRB9HNSvOCSdeQltb86RGL

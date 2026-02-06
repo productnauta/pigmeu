@@ -1,0 +1,14 @@
+presets:
+  deterministic_json:
+    temperature: 0.0
+    top_p: 1.0
+    max_output_tokens: 4048
+    presence_penalty: 0.0
+    frequency_penalty: 0.0
+
+  balanced_writing:
+    temperature: 0.4
+    top_p: 1.0
+    max_output_tokens: 1600
+    presence_penalty: 0.0
+    frequency_penalty: 0.0

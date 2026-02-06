@@ -127,14 +127,14 @@ flowchart LR
      ERR:::bad
      N1:::note
      N2:::note
-    classDef file fill:'#ff0000',stroke:'#ff1818',color:'#558bff',stroke-width:4px
-    classDef proc fill:'#eeff00',stroke:'#ff1818',color:'#ff1818',stroke-width:4px
-    classDef llm  fill:'#030303',stroke:'#115dff',color:'#ff1818',stroke-width:4px
-    classDef ok   fill:'#d752ff',stroke:'#065f46',color:'#040505',stroke-width:4px
-    classDef bad  fill:'#eb2121',stroke:'#991b1b',color:'#991b1b',stroke-width:4px
-    classDef in   fill:'#4863be',stroke:'#ff1818',color:'#ff1818',stroke-width:4px
-    classDef dec  fill:'#ff1818',stroke:'#ff1818',color:'#111827',stroke-width:4px
-    classDef note fill:'#ff0000',stroke:'#fbfabb',color:'#6b7280',stroke-dasharray: 4 4,stroke-width:4px
+    classDef file fill:#ffffff,stroke:#ff1818,color:#558bff,stroke-width:4px
+    classDef proc fill:#ffffff,stroke:#ff1818,color:#ff1818,stroke-width:4px
+    classDef llm  fill:#ffffff,stroke:#115dff,color:#ff1818,stroke-width:4px
+    classDef ok   fill:#ffffff,stroke:#065f46,color:#040505,stroke-width:4px
+    classDef bad  fill:#eb2121,stroke:#991b1b,color:#991b1b,stroke-width:4px
+    classDef in   fill:#ffffff,stroke:#ff1818,color:#ff1818,stroke-width:4px
+    classDef dec  fill:#ffffff,stroke:#ff1818,color:#111827,stroke-width:4px
+    classDef note fill:#ffffff,stroke:#fbfabb,color:#6b7280,stroke-dasharray: 4 4,stroke-width:4px
 
 ```
 
