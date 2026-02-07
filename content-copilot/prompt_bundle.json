@@ -1,0 +1,107 @@
+{
+  "prompt_config": {
+    "id": "toc_generation",
+    "description": "Gera três propostas de TOC (Table of Contents) para um artigo de blog.",
+    "runtime": {
+      "provider": "mistral",
+      "model": "mistral-large-latest",
+      "mode": "chat",
+      "model_preset": "deterministic_json"
+    },
+    "messages": [
+      {
+        "role": "system",
+        "template": "template/system-prompt.md"
+      },
+      {
+        "role": "user",
+        "template": "template/user-message.md"
+      }
+    ],
+    "io": {
+      "output": {
+        "schema_ref": "schemas/output.schema.json",
+        "must_be_minified": true
+      }
+    }
+  },
+  "templates": {
+    "template/system-prompt.md": "\nAnalyze a provided context, multiple TOC structures, and a target article title. From this analysis, generate three optimized TOC proposals following SEO and GEO best practices.\nDo not generate article content. Do not explain reasoning. Output only valid, minified JSON, with no markdown or extra text.\n\n{{output_schema_minified}}\n\nBefore responding, internally validate all constraints. If invalid, regenerate silently.\n",
+    "template/user-message.md": "Contexto do artigo:\n{{context}}\n\nGere três propostas de TOC para este artigo, seguindo as regras definidas no prompt do sistema.\n"
+  },
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "proposals": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "toc": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "type": "string",
+                    "enum": [
+                      "h1",
+                      "h2",
+                      "h3"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "level": {
+                          "type": "string",
+                          "enum": [
+                            "h1",
+                            "h2",
+                            "h3"
+                          ]
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "level",
+                        "text"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "level",
+                  "text"
+                ]
+              }
+            }
+          },
+          "required": [
+            "title",
+            "toc"
+          ]
+        },
+        "minItems": 3,
+        "maxItems": 3
+      }
+    },
+    "required": [
+      "proposals"
+    ]
+  }
+}

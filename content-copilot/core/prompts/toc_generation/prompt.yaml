@@ -1,44 +1,39 @@
+# Configuração do Prompt para Geração de TOC
+#
+# Este arquivo define a configuração do prompt para gerar propostas de TOC (Table of Contents).
+#
+# Estrutura:
+# id: <prompt_id>
+# description: "Descrição do prompt"
+# runtime:
+#   provider: <provider_name>
+#   model: <model_name>
+#   mode: <chat|generate_content>
+#   model_preset: <preset_name>
+# messages:
+#   - role: <system|user>
+#     template: <template_path>
+# io:
+#   output:
+#     schema_ref: <schema_path>
+#     must_be_minified: <true|false>
+
 id: toc_generation
-name: "TOC GENERATION PROMPT"
-version: "1.0.0"
-language: en
-status: active
-tags: ["seo", "geo", "toc", "outline"]
+description: "Gera três propostas de TOC (Table of Contents) para um artigo de blog."
 
 runtime:
   provider: mistral
-  mode: chat
   model: mistral-large-latest
+  mode: chat
   model_preset: deterministic_json
-  parameters:
-    temperature: 0.0
-    top_p: 1.0
-    max_output_tokens: 8000
-  auth:
-    api_key: 5ypcOr0mRKUCz9rdsHAp5RbYFRMoPBS6
 
 messages:
   - role: system
-    template: "template/system-prompt.md"
+    template: template/system-prompt.md
   - role: user
-    template: "template/user-message.md"
+    template: template/user-message.md
 
 io:
-  input:
-    format: json
-    required_fields: ["context", "tocs", "article_title"]
   output:
-    format: json
-    schema_ref: "schemas/output.schema.json"
+    schema_ref: schemas/output.schema.json
     must_be_minified: true
-
-validation:
-  json:
-    strict: true
-    disallow_markdown: true
-  schema:
-    enabled: true
-  retry_on_fail:
-    enabled: true
-    max_retries: 2
-    strategy: regenerate

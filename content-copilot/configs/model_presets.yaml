@@ -1,14 +1,43 @@
-presets:
+# Presets de Modelos para IA
+#
+# Este arquivo define configurações pré-definidas para diferentes cenários de uso.
+# Cada preset pode ser referenciado em prompts ou scripts para garantir consistência.
+#
+# Estrutura:
+# model_presets:
+#   <preset_name>:
+#     temperature: 0.3  # Criatividade do modelo (0.0 a 1.0)
+#     max_tokens: 2000  # Número máximo de tokens na resposta
+#     response_format: { "type": "json_object" }  # Formato da resposta (opcional)
+#     top_p: 1.0  # Amostragem de núcleo (opcional)
+#     frequency_penalty: 0.0  # Penalidade para repetição (opcional)
+
+model_presets:
   deterministic_json:
-    temperature: 0.0
-    top_p: 1.0
-    max_output_tokens: 4048
-    presence_penalty: 0.0
-    frequency_penalty: 0.0
+    temperature: 0.3
+    max_tokens: 2000
+    response_format: { "type": "json_object" }
+    description: "Preset para geração de JSON estruturado e determinístico."
+
+  creative_text:
+    temperature: 0.7
+    max_tokens: 1000
+    description: "Preset para geração de texto criativo e variado."
+
+  concise_summary:
+    temperature: 0.2
+    max_tokens: 500
+    description: "Preset para resumos concisos e objetivos."
+
+  high_quality:
+    temperature: 0.5
+    max_tokens: 4000
+    top_p: 0.9
+    frequency_penalty: 0.5
+    description: "Preset para conteúdo de alta qualidade com baixa repetição."
 
   balanced_writing:
     temperature: 0.4
     top_p: 1.0
-    max_output_tokens: 1600
-    presence_penalty: 0.0
-    frequency_penalty: 0.0
+    max_tokens: 1600
+    description: "Preset para escrita equilibrada entre criatividade e precisão."

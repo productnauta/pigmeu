@@ -1,0 +1,23 @@
+# Registro de Prompts
+#
+# Este arquivo mapeia os prompts disponíveis no sistema.
+# Cada prompt é identificado por um ID e um caminho para seu arquivo de configuração.
+#
+# Estrutura:
+# prompts:
+#   - id: <prompt_id>
+#     description: "Descrição do prompt"
+#     path: "caminho/para/prompt.yaml"
+
+prompts:
+  - id: toc_generation
+    description: "Gera três propostas de TOC (Table of Contents) para um artigo de blog."
+    path: "core/prompts/toc_generation/prompt.yaml"
+
+  - id: content_summary
+    description: "Gera um resumo conciso de um artigo ou conteúdo de entrada."
+    path: "core/prompts/content_summary/prompt.yaml"
+
+  - id: article_draft
+    description: "Gera um rascunho completo de artigo com base em um título e contexto."
+    path: "core/prompts/article_draft/prompt.yaml"

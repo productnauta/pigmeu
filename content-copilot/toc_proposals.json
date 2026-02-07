@@ -1,0 +1,61 @@
+{
+  "proposals": [
+    {
+      "title": "Guia Completo sobre Inteligência Artificial",
+      "toc": [
+        {
+          "level": "h1",
+          "text": "Introdução à Inteligência Artificial"
+        },
+        {
+          "level": "h2",
+          "text": "Aplicações da IA",
+          "children": [
+            {
+              "level": "h3",
+              "text": "Saúde"
+            },
+            {
+              "level": "h3",
+              "text": "Finanças"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Como a IA Está Transformando os Negócios",
+      "toc": [
+        {
+          "level": "h1",
+          "text": "Impacto da IA nos Negócios"
+        },
+        {
+          "level": "h2",
+          "text": "Automação de Processos"
+        },
+        {
+          "level": "h2",
+          "text": "Tomada de Decisão Baseada em Dados"
+        }
+      ]
+    },
+    {
+      "title": "O Futuro da Inteligência Artificial",
+      "toc": [
+        {
+          "level": "h1",
+          "text": "Tendências em IA"
+        },
+        {
+          "level": "h2",
+          "text": "IA Generativa"
+        },
+        {
+          "level": "h2",
+          "text": "Ética e Responsabilidade"
+        }
+      ]
+    }
+  ]
+}

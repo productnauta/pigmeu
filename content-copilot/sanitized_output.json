@@ -1,0 +1,38 @@
+{
+  "titles": [
+    {
+      "level": "h1",
+      "text": "Introdução à Inteligência Artificial"
+    },
+    {
+      "level": "h2",
+      "text": "O que é Inteligência Artificial?"
+    },
+    {
+      "level": "h2",
+      "text": "Aplicações da IA"
+    },
+    {
+      "level": "h3",
+      "text": "Saúde"
+    },
+    {
+      "level": "h3",
+      "text": "Finanças"
+    },
+    {
+      "level": "h2",
+      "text": "O Futuro da IA"
+    }
+  ],
+  "paragraphs": [
+    "Um guia completo para entender os conceitos básicos de IA.",
+    "Inteligência Artificial (IA) é a capacidade de máquinas realizarem tarefas que normalmente requerem inteligência humana.",
+    "Isso inclui aprendizado, raciocínio, percepção e tomada de decisões.",
+    "A IA está transformando diversos setores, incluindo:",
+    "A IA é usada para diagnóstico de doenças, análise de imagens médicas e descoberta de medicamentos.",
+    "No setor financeiro, a IA ajuda em detecção de fraudes, análise de riscos e atendimento ao cliente.",
+    "A IA continuará a evoluir, com avanços em áreas como:"
+  ],
+  "main_content": "Exemplo de Artigo sobre Inteligência Artificial\nIntrodução à Inteligência Artificial\nUm guia completo para entender os conceitos básicos de IA.\nO que é Inteligência Artificial?\nInteligência Artificial (IA) é a capacidade de máquinas realizarem tarefas que normalmente requerem inteligência humana.\nIsso inclui aprendizado, raciocínio, percepção e tomada de decisões.\nAplicações da IA\nA IA está transformando diversos setores, incluindo:\nSaúde\nFinanças\nEducação\nSaúde\nA IA é usada para diagnóstico de doenças, análise de imagens médicas e descoberta de medicamentos.\nFinanças\nNo setor financeiro, a IA ajuda em detecção de fraudes, análise de riscos e atendimento ao cliente.\nO Futuro da IA\nA IA continuará a evoluir, com avanços em áreas como:\nIA Generativa\nÉtica e Responsabilidade\nIntegração com outras tecnologias"
+}

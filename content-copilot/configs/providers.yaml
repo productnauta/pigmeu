@@ -1,10 +1,31 @@
+# Configurações dos Provedores de IA
+#
+# Este arquivo contém as configurações para interagir com os provedores de IA.
+# As chaves de API podem ser sobrescritas por variáveis de ambiente (ex.: MISTRAL_API_KEY).
+#
+# Estrutura:
+# providers:
+#   <provider_name>:
+#     api_key: "${VARIAVEL_DE_AMBIENTE}"  # Nunca armazene chaves diretamente aqui
+#     base_url: "https://endpoint-do-provedor.com"
+#     timeout: 30  # Tempo limite em segundos (opcional)
+#     default_mode: "chat"  # Modo padrão de interação (opcional)
+
 providers:
   mistral:
-    default_mode: chat
-    api_key: 5ypcOr0mRKUCz9rdsHAp5RbYFRMoPBS6
-  mistral:
-    default_mode: messages
-    api_key: CN9fTAtnszPRB9HNSvOCSdeQltb86RGL
-  mistral:
-    default_mode: generate_content
-    api_key: CN9fTAtnszPRB9HNSvOCSdeQltb86RGL
+    api_key: "${MISTRAL_API_KEY}"  # Sobrescrever com variável de ambiente
+    base_url: "https://api.mistral.ai/v1"
+    timeout: 30
+    default_mode: "chat"
+
+  groq:
+    api_key: "${GROQ_API_KEY}"  # Sobrescrever com variável de ambiente
+    base_url: "https://api.groq.com/openai/v1"
+    timeout: 30
+    default_mode: "chat"
+
+  gemini:
+    api_key: "${GEMINI_API_KEY}"  # Sobrescrever com variável de ambiente
+    base_url: "https://generativelanguage.googleapis.com/v1beta"
+    timeout: 30
+    default_mode: "generate_content"
